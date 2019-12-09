@@ -12,6 +12,9 @@ class Player:
 
         self.solver = solver
 
+    def _human_move(self):
+        pass
+
     def _random_move(self, board: Board) -> str:
         assert board.turn == self.player, "Not bot turn to move!"
         
@@ -19,6 +22,7 @@ class Player:
         move = choice(moves).uci()
 
         return move
+
     
     def _minimax_move(self, board, depth, player):
         pass

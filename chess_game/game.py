@@ -1,24 +1,29 @@
+import pandas as pd
+
 from chess import Board 
 
 from itertools import count
+from time import sleep
+from random import choice
+from tqdm.notebook import tqdm
 
 from IPython.display import display, clear_output
 
 try:
     from board import game_over, check_tie, check_win
 except ModuleNotFoundError:
-    from .board import game_over, check_win, check_win
+    from .board import game_over, check_tie, check_win
 
 
 class Game:
-    def __init__(self, with_human: bool, board: Board=None):
+    def __init__(self, board: Board=None):
         # for games with specific starting point
         if board:
             self.board = board
         else:
             self.board = Board()
 
-    def _play_game(self, white_p, black_p, visual=False):
+    def _game(self, white_p, black_p, visual=False):
         board = self.board.copy()
         result = None
         
@@ -26,6 +31,7 @@ class Game:
             for i in count():
                 if visual:
                     display(board)
+                    sleep(1)
 
                 if game_over(board, claim_draw=True):
                     break
@@ -41,40 +47,32 @@ class Game:
         except KeyboardInterrupt:
             print("Game stopped!")
             
-        if check_tie(board):
+        if check_tie(board, claim_draw=True):
             result = -1
         else:
             result = int(check_win(board, True))
             
         return {"white": white_p.solver, 
                 "black": black_p.solver, 
+                "FEN": board.fen(), "last_move": board.peek(), 
+                "moves_history": [move.uci() for move in board.move_stack],
                 "moves": i, "result": result}
 
-    def play_games(self, p1_cls, p2_cls, n=10):
-        results = {}
+    def start_game(self, p1_cls, p2_cls, visual=False):
+        goes_first = choice([True, False])
         
-        for i in tqdm(range(n)):
-            goes_first = choice([True, False])
-            
-            if goes_first:
-                result = play_game(p1_cls(True), p2_cls(False))
-            else:
-                result = play_game(p2_cls(True), p1_cls(False))
+        if goes_first:
+            result = self._game(p1_cls(True), p2_cls(False), visual)
+        else:
+            result = self._game(p2_cls(True), p1_cls(False), visual)
                 
+        return result
+
+    def start_games(self, p1_cls, p2_cls, n=10):
+        results = {}
+
+        for i in tqdm(range(n)):
+            result = self.start_game(p1_cls, p2_cls)
             results[i] = result
-            
+
         return pd.DataFrame.from_dict(results, orient="index")
-
-    def start_game(self, p1, p2, visual=True,):
-        pass
-    
-        # if human:
-        #     human_side = bool(input("Please, choose side (1 or 0): "))
-
-        #     p1 = 
-
-        #     result = self._play_game(p1, p2, visual=True)
-        # else:
-        #     pass
-
-        # return result

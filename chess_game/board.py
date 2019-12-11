@@ -1,13 +1,23 @@
 import chess
 
 from random import random
-from config import BOARD_SCORES, END_SCORES
+
+try:
+    from .config import BOARD_SCORES, END_SCORES
+except ModuleNotFoundError:
+    from config import BOARD_SCORES, END_SCORES
 
 
 def print_board(board):
     return board._repr_svg_()
 
 
+def turn_side(board):
+    side = "White" if board.turn == True else "Black"
+    
+    return side
+
+# TODO: wierd mutable defualt arg!! remove it to class
 def game_score(board, player, end_scores_policy=END_SCORES, board_scores_policy=BOARD_SCORES):
     # TODO: add claim_draw -> mb slow
     score = None
@@ -53,7 +63,7 @@ def check_tie(board, claim_draw=False):
 
 
 def eval_board_state(board, player: bool, board_scores_policy: dict):
-    total_score = 0
+    total_score = random()
 
     for piece, score in board_scores_policy.items():
         piece = getattr(chess, piece)

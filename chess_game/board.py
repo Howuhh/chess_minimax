@@ -3,9 +3,9 @@ import chess
 from random import random
 
 try:
-    from .config import BOARD_SCORES, END_SCORES
-except ModuleNotFoundError:
     from config import BOARD_SCORES, END_SCORES
+except ModuleNotFoundError:
+    from .config import BOARD_SCORES, END_SCORES
 
 
 def print_board(board):

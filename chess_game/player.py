@@ -5,17 +5,17 @@ from chess import Board, Move
 # from copy import deepcopy
 
 try:
-    from .board import turn_side, eval_board_state
-    from .config import BOARD_SCORES
-except ModuleNotFoundError:
     from board import turn_side, eval_board_state
     from config import BOARD_SCORES
+except ModuleNotFoundError:
+    from .board import turn_side, eval_board_state
+    from .config import BOARD_SCORES
 
 
 class Player:
-    def __init__(self, player: bool, solver: str):
+    def __init__(self, player: bool, solver: str=None):
         self.player = player
-        self.solver = None
+        self.solver = solver
 
     def move(self):
         pass
@@ -51,7 +51,7 @@ class HumanPlayer(Player):
 
         while move is None:
             print("Invalid uci move! Try again.",)
-            move = self._get_move()
+            move = self._get_move(board)
 
         while (move not in legal_moves):
             print("Not a legal move! Avaliable moves:\n")
@@ -105,3 +105,4 @@ if __name__ == "__main__":
     test_bot = HumanPlayer(player=True)
 
     print(test_bot.move(test_board))
+    print(test_bot.solver)

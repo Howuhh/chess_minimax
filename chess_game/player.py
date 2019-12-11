@@ -94,8 +94,7 @@ class GreedyPlayer(Player):
 
 class MiniMaxPlayer(Player):
     def __init__(self, player):
-        super().__init__(player)
-        self.solver = "minimax"
+        super().__init__(player, "minimax")
 
     def move(self, board: Board) -> str:
         pass

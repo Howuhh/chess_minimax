@@ -8,6 +8,8 @@ from itertools import zip_longest
 from chess import Board, Move
 # from copy import deepcopy
 
+from abc import ABC, abstractmethod
+
 try:
     from board import turn_side, eval_board_state, game_over, game_score, sorted_moves
     from config import BOARD_SCORES, END_SCORES, PIECES
@@ -20,11 +22,12 @@ log.basicConfig(level=log.INFO,
                     datefmt='%H:%M:%S') 
 
 
-class Player:
+class Player(ABC):
     def __init__(self, player: bool, solver: str=None):
         self.player = player
         self.solver = solver
 
+    @abstractmethod
     def move(self):
         pass
 
